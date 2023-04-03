@@ -9,8 +9,13 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) throws Exception {
         // fazer uma conexão HTTP e buscar os top 250 filmes
-        
-        String url = "https://imdb-api.com/en/API/Top250Movies/k_qh6zmucm";
+
+        String imdbAPIKey = System.getenv("IMDB_API_KEY");
+        String url = "https://imdb-api.com/en/API/Top250Movies/" + imdbAPIKey;
+
+        // series
+        // String url = "https://imdb-api.com/en/API/Top250TVs/" + imdbAPIKey ;
+
         URI endereco = URI.create(url);
         var client = HttpClient.newHttpClient();
         var request = HttpRequest.newBuilder(endereco).GET().build();
@@ -23,11 +28,17 @@ public class App {
         List<Map<String, String>> listaDeFilmes = parser.parse(body);
         
         for (Map<String, String> filme: listaDeFilmes) {
-            System.out.println(filme.get("title"));
-            System.out.println(filme.get("image"));
-            System.out.println(filme.get("imdbRating"));
+            System.out.println("\u001b[1mTítulo: \u001b[m" + filme.get("title"));
+            System.out.println("\u001b[1mURL da imagem: \u001b[m" + filme.get("image"));
+            double classificacao = Double.parseDouble(filme.get("imDbRating"));
+            int numeroEstrelinhas = (int) classificacao;
+            for (int i = 0; i <= numeroEstrelinhas; i++) {
+                System.out.println("⭐");
+            }
+            System.out.println("\n");
         }
 
         // exibir e manipular os dados
     }
 }
+
